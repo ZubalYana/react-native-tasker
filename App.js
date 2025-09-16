@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, TouchableOpacity, TextInput, Modal, Animated } from 'react-native';
 import { useState, useEffect, useRef } from 'react'
-import { Plus } from 'lucide-react-native';
+import { Plus, X } from 'lucide-react-native';
 export default function App() {
   const [visible, setVisible] = useState(false)
   const [importance, setImportance] = useState(null)
@@ -14,7 +14,6 @@ export default function App() {
         Animated.timing(scaleAnim, { toValue: 1, duration: 150, useNativeDriver: true }),
       ]).start();
     }
-
   }, [importance])
 
   return (
@@ -32,6 +31,8 @@ export default function App() {
       <Modal visible={visible} animationType="slide" transparent={true}>
         <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "rgba(0,0,0,0.5)" }}>
           <View style={{ backgroundColor: "white", padding: 20, borderRadius: 10, width: 360 }}>
+            <X color="#000" size={24} style={{ position: "absolute", top: 15, right: 15 }} onPress={() => setVisible(false)} />
+
             <Text style={{ fontSize: 20, fontWeight: '600' }}>Let's create a new task! 👋</Text>
             <TextInput placeholder='Task name' style={styles.textInput} />
             <TextInput placeholder='Task description' style={styles.textInput} />
@@ -55,6 +56,11 @@ export default function App() {
                 </Animated.View>
               ))}
             </View>
+
+            <TouchableOpacity style={styles.createBtn}>
+              <Text style={styles.createBtnText}>Create</Text>
+            </TouchableOpacity>
+
           </View>
         </View>
       </Modal>
@@ -80,14 +86,18 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
     borderRadius: 50,
-    backgroundColor: '#2a2fadff',
+    backgroundColor: '#5458caff',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
     right: 20,
     bottom: 50,
-    boxShadow: '3px 5px 5px #00000038'
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
   },
   textInput: {
     width: 'full',
@@ -115,4 +125,23 @@ const styles = StyleSheet.create({
     backgroundColor:
       level === "Low" ? "#4caf50" : level === "Medium" ? "#ff9800" : "#f44336",
   }),
+  createBtn: {
+    width: '100%',
+    height: 45,
+    borderRadius: 10,
+    backgroundColor: '#5458caff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 30,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  createBtnText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '600',
+  },
 });
