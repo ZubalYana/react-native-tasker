@@ -5,6 +5,18 @@ export default function App() {
   const [visible, setVisible] = useState(false)
   const [importance, setImportance] = useState(null)
 
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    if (importance) {
+      Animated.sequence([
+        Animated.timing(scaleAnim, { toValue: 1.2, duration: 150, useNativeDriver: true }),
+        Animated.timing(scaleAnim, { toValue: 1, duration: 150, useNativeDriver: true }),
+      ]).start();
+    }
+
+  }, [importance])
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Active tasks:</Text>
@@ -23,6 +35,26 @@ export default function App() {
             <Text style={{ fontSize: 20, fontWeight: '600' }}>Let's create a new task! 👋</Text>
             <TextInput placeholder='Task name' style={styles.textInput} />
             <TextInput placeholder='Task description' style={styles.textInput} />
+
+            <Text style={{ marginTop: 20, marginBottom: 6, fontWeight: '600' }}>
+              Select importance:
+            </Text>
+
+            <View style={styles.importanceRow}>
+              {["Low", "Medium", "High"].map((level, idx) => (
+                <Animated.View key={idx} style={{ transform: [{ scale: importance === level ? scaleAnim : 1 }] }}>
+                  <TouchableOpacity
+                    style={[
+                      styles.importanceBtn,
+                      importance === level && styles.importanceSelected(level),
+                    ]}
+                    onPress={() => setImportance(level)}
+                  >
+                    <Text style={{ color: '#fff' }}>{level}</Text>
+                  </TouchableOpacity>
+                </Animated.View>
+              ))}
+            </View>
           </View>
         </View>
       </Modal>
@@ -66,5 +98,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     marginTop: 15
   },
-
+  importanceRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 10,
+  },
+  importanceBtn: {
+    width: 90,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#aaa",
+  },
+  importanceSelected: (level) => ({
+    backgroundColor:
+      level === "Low" ? "#4caf50" : level === "Medium" ? "#ff9800" : "#f44336",
+  }),
 });
