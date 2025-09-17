@@ -1,9 +1,21 @@
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, Modal, Animated } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, Modal, Animated, Button } from 'react-native';
 import { useState, useEffect, useRef } from 'react'
 import { Plus, X } from 'lucide-react-native';
+import DateTimePicker from "@react-native-community/datetimepicker";
 export default function App() {
-  const [visible, setVisible] = useState(false)
-  const [importance, setImportance] = useState(null)
+  const [visible, setVisible] = useState(false);
+  const [importance, setImportance] = useState(null);
+  const [taskName, setTaskName] = useState('')
+  const [taskDescription, setTaskDescription] = useState('')
+  const [tasks, setTasks] = useState([]);
+  const [date, setDate] = useState(new Date());
+  const [show, setShow] = useState(false);
+
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShow(false);
+    setDate(currentDate);
+  };
 
   const scaleAnim = useRef(new Animated.Value(1)).current;
 
@@ -16,6 +28,19 @@ export default function App() {
     }
   }, [importance])
 
+  const createTask = function () {
+    setTasks([...tasks, { name: taskName, description: taskDescription, importance: importance }])
+    setVisible(false)
+    setTaskName('')
+    setTaskDescription('')
+    setImportance(null)
+  }
+
+  useEffect(() => {
+    console.log("Updated tasks:", tasks);
+  }, [tasks]);
+
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Active tasks:</Text>
@@ -27,6 +52,29 @@ export default function App() {
           <Plus color="#fff" size={36} />
         </Text>
       </TouchableOpacity>
+      <View style={{ marginTop: 20 }}>
+        {tasks.map((task, index) => (
+          <View
+            key={index}
+            style={{
+              padding: 12,
+              borderRadius: 8,
+              backgroundColor: "#f5f5f5",
+              marginBottom: 10
+            }}
+          >
+            <Text style={{ fontSize: 18, fontWeight: "600" }}>{task.name}</Text>
+            <Text style={{ fontSize: 14, color: "#555", marginTop: 3 }}>{task.description}</Text>
+            <Text style={{ marginTop: 4, fontWeight: "500" }}>
+              Importance:
+              <Text style={{ color: task.importance === "Low" ? "#4caf50" : task.importance === "Medium" ? "#ff9800" : "#f44336" }}>
+                {" "}{task.importance}
+              </Text>
+            </Text>
+          </View>
+        ))}
+      </View>
+
 
       <Modal visible={visible} animationType="slide" transparent={true}>
         <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "rgba(0,0,0,0.5)" }}>
@@ -34,9 +82,31 @@ export default function App() {
             <X color="#000" size={24} style={{ position: "absolute", top: 15, right: 15 }} onPress={() => setVisible(false)} />
 
             <Text style={{ fontSize: 20, fontWeight: '600' }}>Let's create a new task! 👋</Text>
-            <TextInput placeholder='Task name' style={styles.textInput} />
-            <TextInput placeholder='Task description' style={styles.textInput} />
+            <TextInput placeholder='Task name' style={styles.textInput} onChangeText={setTaskName} />
+            <TextInput placeholder='Task description' style={styles.textInput} onChangeText={setTaskDescription} />
+            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+              <Text style={{ fontSize: 18, marginBottom: 20 }}>
+                Selected: {date.toLocaleString()}
+              </Text>
 
+              <TouchableOpacity
+                style={{
+
+                }}
+                onPress={setShow(true)}
+              >
+                <Text>Set date and time</Text>
+              </TouchableOpacity>
+
+              {show && (
+                <DateTimePicker
+                  value={date}
+                  mode="datetime"
+                  display="default"
+                  onChange={onChange}
+                />
+              )}
+            </View>
             <Text style={{ marginTop: 20, marginBottom: 6, fontWeight: '600' }}>
               Select importance:
             </Text>
@@ -57,7 +127,7 @@ export default function App() {
               ))}
             </View>
 
-            <TouchableOpacity style={styles.createBtn}>
+            <TouchableOpacity style={styles.createBtn} onPress={createTask}>
               <Text style={styles.createBtnText}>Create</Text>
             </TouchableOpacity>
 
