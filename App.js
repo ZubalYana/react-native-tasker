@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, TouchableOpacity, TextInput, Modal, Animated, Button } from 'react-native';
 import { useState, useEffect, useRef } from 'react'
-import { Plus, X } from 'lucide-react-native';
+import { Plus, X, Settings2 } from 'lucide-react-native';
 import DateTimePicker from "@react-native-community/datetimepicker";
 export default function App() {
   const [visible, setVisible] = useState(false);
@@ -43,7 +43,11 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Active tasks:</Text>
+
+      <View style={{ width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+        <Text style={styles.title}>Active tasks:</Text>
+        <Settings2 />
+      </View>
       <TouchableOpacity
         style={styles.addTask_btn}
         onPress={() => setVisible(true)}
@@ -89,25 +93,18 @@ export default function App() {
                 Selected: {date.toLocaleString()}
               </Text>
 
-              <TouchableOpacity
-                style={{
-
-                }}
-                onPress={setShow(true)}
-              >
-                <Text>Set date and time</Text>
-              </TouchableOpacity>
-
-              {show && (
+              {/* <View style={{ width: "100%" }}>
                 <DateTimePicker
                   value={date}
                   mode="datetime"
                   display="default"
                   onChange={onChange}
+                  style={{ width: "100%" }}
                 />
-              )}
+              </View> */}
+
             </View>
-            <Text style={{ marginTop: 20, marginBottom: 6, fontWeight: '600' }}>
+            <Text style={{ marginTop: 15, marginBottom: 6, fontWeight: '600' }}>
               Select importance:
             </Text>
 
