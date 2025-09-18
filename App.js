@@ -1,21 +1,13 @@
 import { StyleSheet, Text, View, TouchableOpacity, TextInput, Modal, Animated, Button } from 'react-native';
 import { useState, useEffect, useRef } from 'react'
 import { Plus, X, Settings2, CheckSquare, Square } from 'lucide-react-native';
-import DateTimePicker from "@react-native-community/datetimepicker";
 export default function App() {
   const [visible, setVisible] = useState(false);
   const [importance, setImportance] = useState(null);
   const [taskName, setTaskName] = useState('')
   const [taskDescription, setTaskDescription] = useState('')
   const [tasks, setTasks] = useState([]);
-  const [date, setDate] = useState(new Date());
-  const [show, setShow] = useState(false);
 
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
-    setShow(false);
-    setDate(currentDate);
-  };
 
   const scaleAnim = useRef(new Animated.Value(1)).current;
 
@@ -115,7 +107,6 @@ export default function App() {
         ))}
       </View>
 
-
       <Modal visible={visible} animationType="slide" transparent={true}>
         <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "rgba(0,0,0,0.5)" }}>
           <View style={{ backgroundColor: "white", padding: 20, borderRadius: 10, width: 360 }}>
@@ -124,22 +115,6 @@ export default function App() {
             <Text style={{ fontSize: 20, fontWeight: '600' }}>Let's create a new task! 👋</Text>
             <TextInput placeholder='Task name' style={styles.textInput} onChangeText={setTaskName} />
             <TextInput placeholder='Task description' style={styles.textInput} onChangeText={setTaskDescription} />
-            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-              <Text style={{ fontSize: 18, marginBottom: 20 }}>
-                Selected: {date.toLocaleString()}
-              </Text>
-
-              {/* <View style={{ width: "100%" }}>
-                <DateTimePicker
-                  value={date}
-                  mode="datetime"
-                  display="default"
-                  onChange={onChange}
-                  style={{ width: "100%" }}
-                />
-              </View> */}
-
-            </View>
             <Text style={{ marginTop: 15, marginBottom: 6, fontWeight: '600' }}>
               Select importance:
             </Text>
