@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, TouchableOpacity, TextInput, Modal, Animated, Button } from 'react-native';
 import { useState, useEffect, useRef } from 'react'
-import { Plus, X, Settings2 } from 'lucide-react-native';
+import { Plus, X, Settings2, CheckSquare, Square } from 'lucide-react-native';
 import DateTimePicker from "@react-native-community/datetimepicker";
 export default function App() {
   const [visible, setVisible] = useState(false);
@@ -28,17 +28,28 @@ export default function App() {
     }
   }, [importance])
 
-  const createTask = function () {
-    setTasks([...tasks, { name: taskName, description: taskDescription, importance: importance }])
-    setVisible(false)
-    setTaskName('')
-    setTaskDescription('')
-    setImportance(null)
-  }
+  const createTask = () => {
+    setTasks([...tasks, {
+      name: taskName,
+      description: taskDescription,
+      importance: importance,
+      completed: false
+    }]);
+    setVisible(false);
+    setTaskName('');
+    setTaskDescription('');
+    setImportance(null);
+  };
 
   useEffect(() => {
     console.log("Updated tasks:", tasks);
   }, [tasks]);
+
+  const toggleTaskCompletion = (index) => {
+    const updated = [...tasks];
+    updated[index].completed = !updated[index].completed;
+    setTasks(updated);
+  };
 
 
   return (
@@ -64,18 +75,43 @@ export default function App() {
               padding: 12,
               borderRadius: 8,
               backgroundColor: "#f5f5f5",
-              marginBottom: 10
+              marginBottom: 10,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between"
             }}
           >
-            <Text style={{ fontSize: 18, fontWeight: "600" }}>{task.name}</Text>
-            <Text style={{ fontSize: 14, color: "#555", marginTop: 3 }}>{task.description}</Text>
-            <Text style={{ marginTop: 4, fontWeight: "500" }}>
-              Importance:
-              <Text style={{ color: task.importance === "Low" ? "#4caf50" : task.importance === "Medium" ? "#ff9800" : "#f44336" }}>
-                {" "}{task.importance}
+            <View style={{ flex: 1 }}>
+              <Text
+                style={{
+                  fontSize: 18,
+                  fontWeight: "600",
+                  textDecorationLine: task.completed ? "line-through" : "none",
+                  color: task.completed ? "#888" : "#000"
+                }}
+              >
+                {task.name}
               </Text>
-            </Text>
+              <Text style={{ fontSize: 14, color: "#555", marginTop: 3 }}>
+                {task.description}
+              </Text>
+              <Text style={{ marginTop: 4, fontWeight: "500" }}>
+                Importance:
+                <Text style={{ color: task.importance === "Low" ? "#4caf50" : task.importance === "Medium" ? "#ff9800" : "#f44336" }}>
+                  {" "}{task.importance}
+                </Text>
+              </Text>
+            </View>
+
+            <TouchableOpacity onPress={() => toggleTaskCompletion(index)}>
+              {task.completed ? (
+                <CheckSquare size={28} color="#4caf50" />
+              ) : (
+                <Square size={28} color="#555" />
+              )}
+            </TouchableOpacity>
           </View>
+
         ))}
       </View>
 
