@@ -19,6 +19,8 @@ export default function App() {
       ]).start();
     }
   }, [importance])
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [showTaskModal, setShowTaskModal] = useState(false);
 
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("Minimalistic");
@@ -76,104 +78,113 @@ export default function App() {
       <View style={{ marginTop: 20 }}>
         {value === "Minimalistic" && (
           tasks.map((task, index) => (
-            <View
-              key={index}
-              style={{
-                padding: 12,
-                borderRadius: 8,
-                backgroundColor: "#f5f5f5",
-                marginBottom: 10,
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between"
-              }}
-            >
-              <View style={{ flex: 1 }}>
-                <Text
-                  style={{
-                    fontSize: 18,
-                    fontWeight: "600",
-                    textDecorationLine: task.completed ? "line-through" : "none",
-                    color: task.completed ? "#888" : "#000"
-                  }}
-                >
-                  {task.name}
-                </Text>
-                <Text style={{ fontSize: 14, color: "#555", marginTop: 3 }}>
-                  {task.description}
-                </Text>
-                <Text style={{ marginTop: 4, fontWeight: "500" }}>
-                  Importance:
-                  <Text style={{ color: task.importance === "Low" ? "#4caf50" : task.importance === "Medium" ? "#ff9800" : "#f44336" }}>
-                    {" "}{task.importance}
-                  </Text>
-                </Text>
-              </View>
-
-              <TouchableOpacity onPress={() => toggleTaskCompletion(index)}>
-                {task.completed ? (
-                  <CheckSquare size={28} color="#4caf50" />
-                ) : (
-                  <Square size={28} color="#555" />
-                )}
-              </TouchableOpacity>
-            </View>
-          ))
-        )}
-        {value === "Colored" && (
-          tasks.map((task, index) => {
-            const bgColor =
-              task.importance === "Low"
-                ? "#4caf50"   // green
-                : task.importance === "Medium"
-                  ? "#ff9800"   // orange
-                  : "#f44336";  // red
-
-            return (
+            <TouchableOpacity key={index} onPress={() => {
+              setSelectedTask(task);
+              setShowTaskModal(true);
+            }}>
               <View
-                key={index}
                 style={{
-                  padding: 16,
-                  borderRadius: 10,
-                  backgroundColor: bgColor,
-                  marginBottom: 12,
+                  padding: 12,
+                  borderRadius: 8,
+                  backgroundColor: "#f5f5f5",
+                  marginBottom: 10,
                   flexDirection: "row",
                   alignItems: "center",
-                  justifyContent: "space-between",
-                  shadowColor: "#000",
-                  shadowOffset: { width: 0, height: 3 },
-                  shadowOpacity: 0.2,
-                  shadowRadius: 4,
-                  elevation: 5,
+                  justifyContent: "space-between"
                 }}
               >
                 <View style={{ flex: 1 }}>
                   <Text
                     style={{
                       fontSize: 18,
-                      fontWeight: "700",
+                      fontWeight: "600",
                       textDecorationLine: task.completed ? "line-through" : "none",
-                      color: "#fff"
+                      color: task.completed ? "#888" : "#000"
                     }}
                   >
                     {task.name}
                   </Text>
-                  <Text style={{ fontSize: 14, color: "#f0f0f0", marginTop: 4 }}>
+                  <Text style={{ fontSize: 14, color: "#555", marginTop: 3 }}>
                     {task.description}
                   </Text>
-                  <Text style={{ marginTop: 6, fontWeight: "600", color: "#fff" }}>
-                    Importance: {task.importance}
+                  <Text style={{ marginTop: 4, fontWeight: "500" }}>
+                    Importance:
+                    <Text style={{ color: task.importance === "Low" ? "#4caf50" : task.importance === "Medium" ? "#ff9800" : "#f44336" }}>
+                      {" "}{task.importance}
+                    </Text>
                   </Text>
                 </View>
 
                 <TouchableOpacity onPress={() => toggleTaskCompletion(index)}>
                   {task.completed ? (
-                    <CheckSquare size={28} color="#fff" />
+                    <CheckSquare size={28} color="#4caf50" />
                   ) : (
-                    <Square size={28} color="#fff" />
+                    <Square size={28} color="#555" />
                   )}
                 </TouchableOpacity>
               </View>
+            </TouchableOpacity>
+          ))
+        )}
+        {value === "Colored" && (
+          tasks.map((task, index) => {
+            const bgColor =
+              task.importance === "Low"
+                ? "#4caf50"
+                : task.importance === "Medium"
+                  ? "#ff9800"
+                  : "#f44336";
+
+            return (
+              <TouchableOpacity key={index} onPress={() => {
+                setSelectedTask(task);
+                setShowTaskModal(true);
+              }}>
+                <View
+
+                  style={{
+                    padding: 16,
+                    borderRadius: 10,
+                    backgroundColor: bgColor,
+                    marginBottom: 12,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    shadowColor: "#000",
+                    shadowOffset: { width: 0, height: 3 },
+                    shadowOpacity: 0.2,
+                    shadowRadius: 4,
+                    elevation: 5,
+                  }}
+                >
+                  <View style={{ flex: 1 }}>
+                    <Text
+                      style={{
+                        fontSize: 18,
+                        fontWeight: "700",
+                        textDecorationLine: task.completed ? "line-through" : "none",
+                        color: "#fff"
+                      }}
+                    >
+                      {task.name}
+                    </Text>
+                    <Text style={{ fontSize: 14, color: "#f0f0f0", marginTop: 4 }}>
+                      {task.description}
+                    </Text>
+                    <Text style={{ marginTop: 6, fontWeight: "600", color: "#fff" }}>
+                      Importance: {task.importance}
+                    </Text>
+                  </View>
+
+                  <TouchableOpacity onPress={() => toggleTaskCompletion(index)}>
+                    {task.completed ? (
+                      <CheckSquare size={28} color="#fff" />
+                    ) : (
+                      <Square size={28} color="#fff" />
+                    )}
+                  </TouchableOpacity>
+                </View>
+              </TouchableOpacity>
             );
           })
         )}
@@ -238,6 +249,78 @@ export default function App() {
           </View>
         </View>
       </Modal>
+      <Modal visible={showTaskModal} animationType="slide" transparent={true}>
+        <View style={{ flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.5)" }}>
+          <View style={{
+            backgroundColor: "#fff",
+            padding: 20,
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
+            minHeight: 500
+          }}>
+            <TouchableOpacity onPress={() => setShowTaskModal(false)} style={{ position: "absolute", right: 15, top: 15 }}>
+              <X size={24} color="#000" />
+            </TouchableOpacity>
+
+            {selectedTask && (
+              <>
+                <Text style={{ fontSize: 22, fontWeight: "700", marginBottom: 10 }}>
+                  {selectedTask.name}
+                </Text>
+                <Text style={{ fontSize: 16, marginBottom: 10 }}>
+                  {selectedTask.description}
+                </Text>
+                <Text style={{ fontWeight: "600", marginBottom: 20 }}>
+                  Importance:{" "}
+                  <Text style={{
+                    color: selectedTask.importance === "Low" ? "#4caf50" :
+                      selectedTask.importance === "Medium" ? "#ff9800" : "#f44336"
+                  }}>
+                    {selectedTask.importance}
+                  </Text>
+                </Text>
+
+                <TextInput
+                  placeholder="Edit task name"
+                  value={selectedTask.name}
+                  onChangeText={(text) => setSelectedTask({ ...selectedTask, name: text })}
+                  style={styles.textInput}
+                />
+                <TextInput
+                  placeholder="Edit description"
+                  value={selectedTask.description}
+                  onChangeText={(text) => setSelectedTask({ ...selectedTask, description: text })}
+                  style={styles.textInput}
+                />
+
+                <TouchableOpacity
+                  style={[styles.createBtn, { marginTop: 20, backgroundColor: "#4caf50" }]}
+                  onPress={() => {
+                    const updated = tasks.map((t) =>
+                      t === selectedTask ? selectedTask : t
+                    );
+                    setTasks(updated);
+                    setShowTaskModal(false);
+                  }}
+                >
+                  <Text style={styles.createBtnText}>Save Changes</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={[styles.createBtn, { marginTop: 10, backgroundColor: "#f44336" }]}
+                  onPress={() => {
+                    setTasks(tasks.filter((t) => t !== selectedTask));
+                    setShowTaskModal(false);
+                  }}
+                >
+                  <Text style={styles.createBtnText}>Delete Task</Text>
+                </TouchableOpacity>
+              </>
+            )}
+          </View>
+        </View>
+      </Modal>
+
     </View>
   );
 }
